@@ -1,8 +1,8 @@
 import {NextResponse} from 'next/server' 
-import OpenAI from 'openai' 
+import {OpenAI} from 'openai' 
 
 
-const sysPrompt = `
+const systemPrompt = `
 You are a flashcard creator, tasked with generating effective flashcards to help users study and retain information across a variety of topics. Each flashcard should feature a clear, concise question or prompt on one side (Q) and a precise, factual answer on the other side (A). The flashcards should be customized to meet the user's needs, emphasizing key concepts, definitions, or problem-solving strategies. They should be straightforward, free of unnecessary jargon, and designed for quick recall.
 
 Consider the following guidelines when creating flashcards:
@@ -11,6 +11,7 @@ Consider the following guidelines when creating flashcards:
 - Relevance: Focus on the most important information that needs to be memorized or understood.
 - Variety: Include different types of questions, such as definitions, multiple-choice, true/false, or problem-solving prompts.
 - Engagement: Where possible, make the content engaging by adding context, examples, or scenarios that make the information more relatable.
+- Only generate 10 flashcards.
 
 Format Guide:
 
@@ -34,10 +35,11 @@ export async function POST(req) {
     apiKey: process.env.OPENAI_API_KEY
   }) 
   const data = await req.json()
+  console.log(data)
 
   // Create a chat completion request to the OpenAI API
   const completion = await openai.chat.completions.create({
-    messages: [{role: 'system', content: sysPrompt}, ...data], // Include the system prompt and user messages
+    messages: [{role: 'system', content: systemPrompt}, {role: 'user', content: data}], // Include the system prompt and user messages
     model: 'meta-llama/llama-3.1-8b-instruct:free', // Specify the model to use
     stream: true, // Enable streaming responses
     response_format: {type: 'json_object'},
@@ -64,5 +66,5 @@ export async function POST(req) {
     },
   })
 
-  return new NextResponse.json(content.content) // Return the stream as the response
+  return new NextResponse(stream) // Return the stream as the response
 }

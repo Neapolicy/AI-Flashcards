@@ -5,8 +5,8 @@ import { SignIn, SignUp } from '@clerk/nextjs';
 
 export default function SignUpPage() {
     return (
-        <Container maxWidth="sm">
-            <AppBar position="static" sx={{ backgroundColor: "#35f51b5" }}>
+        <Container maxWidth="100vw">
+            <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
                         Flashcard SaaS
